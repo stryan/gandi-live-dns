@@ -6,18 +6,33 @@ Copy this file to config.py and update the settings
 #!/usr/bin/env python
 # encoding: utf-8
 
+
+api_secret = os.environ.get("GANDI_API_SECRET", "TOKEN")
+api_endpoint = os.environ.get("GANDI_API_ENDPOINT",'https://dns.api.gandi.net/api/v5')
+
+static_ip = os.environ.get("GANDI_STATIC_IP","")
+domain = os.environ.get("GANDI_DOMAIN","")
+subdomains = os.environ.get("GANDI_SUBDOMAINS","").split(",")
+ttl = os.environ.get("GANDI_TIMEOUT","300")
+ifconfig = os.environ.get("GANDI_IFCONFIG","https://ifconfig.co/ip")
+
+
+'''
+Original instructions below:
+'''
+
 '''
 Get your API key
 Start by retrieving your API Key from the "Security" section in new Account admin panel to be able to make authenticated requests to the API.
 https://account.gandi.net/
-'''
+
 api_secret = '---my_secret_API_KEY----'
 
-'''
+
 Gandiv5 LiveDNS API Location
 http://doc.livedns.gandi.net/#api-endpoint
 https://dns.api.gandi.net/api/v5/
-'''
+
 api_endpoint = 'https://dns.api.gandi.net/api/v5'
 
 #your domain with the subdomains in the zone file/UUID 
@@ -29,7 +44,7 @@ subdomains = ["subdomain1", "subdomain2", "subdomain3"]
 #300 seconds = 5 minutes
 ttl = '300'
 
-''' 
+ 
 IP address lookup service 
 run your own external IP provider:
 + https://github.com/mpolden/ipd
@@ -41,5 +56,6 @@ e.g.
 + http://whatismyip.akamai.com/
 + http://ipinfo.io/ip
 + many more ...
-'''
+
 ifconfig = 'choose_from_above_or_run_your_own'
+'''
