@@ -108,6 +108,7 @@ def main(force_update, verbosity):
     if force_update:
         print("Going to update/create the DNS Records for the subdomains")
         for sub in config.subdomains:
+            sub = sub.replace("\"","")
             update_records(uuid, dynIP, sub)
     else:
         if dynIP == dnsIP:
