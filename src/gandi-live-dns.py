@@ -59,8 +59,8 @@ def get_dnsip(uuid):
     u = requests.get(url, headers=headers)
     if u.status_code == 200:
         json_object = json.loads(u._content)
-        print('Checking IP from DNS Record' , config.subdomains[0], ':', json_object['rrset_values'][0].encode('ascii','ignore').strip('\n'))
-        return json_object['rrset_values'][0].encode('ascii','ignore').strip('\n')
+        print('Checking IP from DNS Record' , config.subdomains[0], ':', json_object['rrset_values'][0].encode('ascii','ignore').decode().strip('\n'))
+        return json_object['rrset_values'][0].strip('\n')
     else:
         print('Error: HTTP Status Code ', u.status_code, 'when trying to get IP from subdomain', config.subdomains[0])   
         print(json_object['message'])
@@ -96,7 +96,6 @@ def main(force_update, verbosity):
     if verbosity:
         print("verbosity turned on - not implemented by now")
 
-        
     #get zone ID from Account
     uuid = get_uuid()
    
