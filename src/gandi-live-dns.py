@@ -26,7 +26,7 @@ def get_dynip(ifconfig_provider):
 
     r = requests.get(ifconfig_provider)
     print('Checking dynamic IP: ' , r._content.decode().strip('\n'))
-    return r.content.strip('\n')
+    return r.content.decode().strip('\n')
 
 def get_uuid():
     ''' 
