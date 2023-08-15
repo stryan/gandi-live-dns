@@ -25,6 +25,10 @@ def get_dynip(ifconfig_provider):
         return config.static_ip.strip('\n')
 
     r = requests.get(ifconfig_provider)
+    if r._content == None:
+        print("No reponse for dynamic IP")
+        exit()
+
     print('Checking dynamic IP: ' , r._content.decode().strip('\n'))
     return r.content.decode().strip('\n')
 
@@ -37,6 +41,9 @@ def get_uuid():
     '''
     url = config.api_endpoint + '/domains/' + config.domain
     u = requests.get(url, headers={"X-Api-Key":config.api_secret})
+    if u._content == None:
+        print("no reponse from Gandi")
+        exit()
     json_object = json.loads(u._content)
     if u.status_code == 200:
         return json_object['zone_uuid']
@@ -57,13 +64,12 @@ def get_dnsip(uuid):
     url = config.api_endpoint+ '/zones/' + uuid + '/records/' + config.subdomains[0] + '/A'
     headers = {"X-Api-Key":config.api_secret}
     u = requests.get(url, headers=headers)
-    if u.status_code == 200:
+    if u.status_code == 200 and u._content != None:
         json_object = json.loads(u._content)
         print('Checking IP from DNS Record' , config.subdomains[0], ':', json_object['rrset_values'][0].encode('ascii','ignore').decode().strip('\n'))
         return json_object['rrset_values'][0].strip('\n')
     else:
         print('Error: HTTP Status Code ', u.status_code, 'when trying to get IP from subdomain', config.subdomains[0])   
-        print(json_object['message'])
         exit()
 
 def update_records(uuid, dynIP, subdomain):
@@ -80,6 +86,9 @@ def update_records(uuid, dynIP, subdomain):
     payload = {"rrset_ttl": config.ttl, "rrset_values": [dynIP]}
     headers = {"Content-Type": "application/json", "X-Api-Key":config.api_secret}
     u = requests.put(url, data=json.dumps(payload), headers=headers)
+    if u._content == None:
+        print("no reponse from gandi")
+        exit()
     json_object = json.loads(u._content)
 
     if u.status_code == 201:
@@ -116,6 +125,7 @@ def main(force_update, verbosity):
         else:
             print("IP Address Mismatch - going to update the DNS Records for the subdomains with new IP", dynIP)
             for sub in config.subdomains:
+                sub = sub.replace("\"","")
                 update_records(uuid, dynIP, sub)
 
 if __name__ == "__main__":
